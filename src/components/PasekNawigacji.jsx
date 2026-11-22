@@ -1,18 +1,23 @@
 import { NavLink } from 'react-router-dom';
 
-function PasekNawigacji({ liczbaNaLiscie }) {
+function PasekNawigacji({ liczbaDoObejrzenia, liczbaObejrzanych }) {
   return (
     <nav className="pasek-nawigacji">
-      <div className="nazwa-aplikacji">Planer Seansów</div>
+      <div className="nazwa-aplikacji">Anime Planer & Tierlista</div>
       <ul className="linki-nawigacji">
         <li>
           <NavLink to="/" end>
-            Szukaj filmów
+            Wyszukiwarka
           </NavLink>
         </li>
         <li>
-          <NavLink to="/lista">
-            Moja lista ({liczbaNaLiscie})
+          <NavLink to="/do-obejrzenia">
+            Do obejrzenia ({liczbaDoObejrzenia})
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/obejrzane">
+            Obejrzane i Tierlista ({liczbaObejrzanych})
           </NavLink>
         </li>
       </ul>

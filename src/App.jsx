@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import PasekNawigacji from './components/PasekNawigacji';
 import StronaGlowna from './pages/StronaGlowna';
+import './index.css';
 
-const KLUCZ_STORAGE = 'planer_seansow_filmy_v1';
+const KLUCZ_STORAGE = 'anime_planer_tierlista_v1';
 
 function App() {
-  const [zapisaneFilmy, setZapisaneFilmy] = useState(() => {
+  const [zapisaneAnime, setZapisaneAnime] = useState(() => {
     try {
       const zapisane = localStorage.getItem(KLUCZ_STORAGE);
       return zapisane ? JSON.parse(zapisane) : [];
@@ -17,45 +18,96 @@ function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem(KLUCZ_STORAGE, JSON.stringify(zapisaneFilmy));
+      localStorage.setItem(KLUCZ_STORAGE, JSON.stringify(zapisaneAnime));
     } catch {
-      // Ignorujemy błąd zapisu do localStorage (np. tryb prywatny)
+      // Ignorujemy błąd zapisu w localStorage
     }
-  }, [zapisaneFilmy]);
+  }, [zapisaneAnime]);
 
-  function dodajDoListy(film) {
-    setZapisaneFilmy((poprzednie) => {
-      const juzJest = poprzednie.some((item) => item.id === film.id);
-      if (juzJest) {
-        return poprzednie;
+  function zapiszLubZaktualizujStatus(item, nowyStatus) {
+    const typMediow = item.media_type || 'tv';
+
+    setZapisaneAnime((poprzednie) => {
+      const indeks = poprzednie.findIndex(
+        (zapisany) =>
+          zapisany.id === item.id && (zapisany.media_type || 'tv') === typMediow
+      );
+
+      if (indeks !== -1) {
+        return poprzednie.map((zapisany, i) =>
+          i === indeks
+            ? {
+                ...zapisany,
+                status: nowyStatus,
+                tier: nowyStatus === 'obejrzane' ? zapisany.tier || 'B' : zapisany.tier,
+              }
+            : zapisany
+        );
       }
 
       return [
         ...poprzednie,
         {
-          id: film.id,
-          title: film.title,
-          poster_path: film.poster_path,
-          release_date: film.release_date,
-          vote_average: film.vote_average,
-          status: 'do_obejrzenia',
-          ocena: '',
-          notatka: '',
+          id: item.id,
+          media_type: typMediow,
+          title: item.title || item.name || 'Bez tytułu',
+          poster_path: item.poster_path || '',
+          release_date: item.release_date || item.first_air_date || '',
+          vote_average: item.vote_average || 0,
+          status: nowyStatus,
+          tier: nowyStatus === 'obejrzane' ? 'B' : '',
+          komentarz: '',
         },
       ];
     });
   }
 
+  function dodajDoObejrzenia(item) {
+    zapiszLubZaktualizujStatus(item, 'do_obejrzenia');
+  }
+
+  function oznaczJakoObejrzane(item) {
+    zapiszLubZaktualizujStatus(item, 'obejrzane');
+  }
+
+  function ustawTierIKomentarz(idPozycji, typMediow, nowyTier, nowyKomentarz) {
+    setZapisaneAnime((poprzednie) =>
+      poprzednie.map((zapisany) =>
+        zapisany.id === idPozycji && (zapisany.media_type || 'tv') === (typMediow || 'tv')
+          ? {
+              ...zapisany,
+              status: 'obejrzane',
+              tier: nowyTier,
+              komentarz: nowyKomentarz,
+            }
+          : zapisany
+      )
+    );
+  }
+
+  function usunZListy(idPozycji, typMediow) {
+    setZapisaneAnime((poprzednie) =>
+      poprzednie.filter(
+        (zapisany) =>
+          !(
+            zapisany.id === idPozycji &&
+            (zapisany.media_type || 'tv') === (typMediow || 'tv')
+          )
+      )
+    );
+  }
+
   return (
     <BrowserRouter>
-      <PasekNawigacji liczbaNaLiscie={zapisaneFilmy.length} />
+      <PasekNawigacji liczbaNaLiscie={zapisaneAnime.length} />
       <Routes>
         <Route
           path="/"
           element={
             <StronaGlowna
-              zapisaneFilmy={zapisaneFilmy}
-              onDodajDoListy={dodajDoListy}
+              zapisaneAnime={zapisaneAnime}
+              onDodajDoObejrzenia={dodajDoObejrzenia}
+              onOznaczJakoObejrzane={oznaczJakoObejrzane}
             />
           }
         />
@@ -63,8 +115,9 @@ function App() {
           path="*"
           element={
             <StronaGlowna
-              zapisaneFilmy={zapisaneFilmy}
-              onDodajDoListy={dodajDoListy}
+              zapisaneAnime={zapisaneAnime}
+              onDodajDoObejrzenia={dodajDoObejrzenia}
+              onOznaczJakoObejrzane={oznaczJakoObejrzane}
             />
           }
         />

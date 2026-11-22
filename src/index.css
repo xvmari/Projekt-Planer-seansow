@@ -4,7 +4,7 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background-color: #121417;
   color: #f3f4f6;
 }
@@ -14,6 +14,7 @@ a {
   text-decoration: none;
 }
 
+/* Pasek nawigacji */
 .pasek-nawigacji {
   display: flex;
   justify-content: space-between;
@@ -33,32 +34,75 @@ a {
 .linki-nawigacji {
   list-style: none;
   display: flex;
-  gap: 18px;
+  gap: 14px;
   margin: 0;
   padding: 0;
+  flex-wrap: wrap;
 }
 
 .linki-nawigacji a {
-  padding: 6px 10px;
-  border-radius: 6px;
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 8px;
+  color: #d1d5db;
+  transition: background-color 0.15s ease;
+}
+
+.linki-nawigacji a:hover {
+  background-color: #282e37;
 }
 
 .linki-nawigacji a.active {
-  background-color: #2563eb;
+  background-color: #ec4899;
   color: #ffffff;
+  font-weight: 600;
 }
 
+/* Główny kontener */
 .kontener {
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 24px 16px;
 }
 
 .opis-strony {
   color: #9ca3af;
-  margin-top: 4px;
+  margin-top: 6px;
+  line-height: 1.5;
 }
 
+/* Zakładki gatunków na górze */
+.pasek-zakladek-gornych {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #2d333b;
+}
+
+.zakladka-gorna {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #374151;
+  background-color: #1d2127;
+  color: #d1d5db;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.zakladka-gorna:hover {
+  border-color: #6b7280;
+}
+
+.zakladka-gorna.aktywna {
+  background-color: #ec4899;
+  border-color: #ec4899;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Wyszukiwarka */
 .formularz-wyszukiwania {
   display: flex;
   gap: 10px;
@@ -66,25 +110,37 @@ a {
   flex-wrap: wrap;
 }
 
-.pole-tekstowe {
-  flex: 1;
-  min-width: 220px;
+.pole-tekstowe,
+.pole-wyboru {
   padding: 10px 14px;
   border-radius: 8px;
   border: 1px solid #374151;
   background-color: #1f242d;
   color: #ffffff;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
+.pole-tekstowe {
+  flex: 1;
+  min-width: 220px;
+}
+
+.pole-tekstowe:focus,
+.pole-wyboru:focus {
+  outline: 2px solid #ec4899;
+  border-color: #ec4899;
+}
+
+/* Przyciski */
 .przycisk {
-  padding: 10px 16px;
+  padding: 10px 14px;
   border-radius: 8px;
   border: none;
   background-color: #2563eb;
   color: #ffffff;
   font-weight: 600;
   cursor: pointer;
+  font-size: 0.9rem;
 }
 
 .przycisk:hover:not(:disabled) {
@@ -97,9 +153,26 @@ a {
   cursor: default;
 }
 
+.przycisk-obejrzane {
+  background-color: #059669;
+}
+
+.przycisk-obejrzane:hover:not(:disabled) {
+  background-color: #047857;
+}
+
+.przycisk-usun {
+  background-color: #dc2626;
+}
+
+.przycisk-usun:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+/* Siatka i karty anime */
 .siatka-filmow {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
   gap: 20px;
 }
 
@@ -127,6 +200,15 @@ a {
   flex: 1;
 }
 
+.etykieta-typu {
+  align-self: flex-start;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background-color: #2b313c;
+  color: #93c5fd;
+}
+
 .tytul-filmu {
   margin: 0;
   font-size: 1rem;
@@ -138,18 +220,148 @@ a {
   color: #9ca3af;
 }
 
-.opis-karty .przycisk {
+.grupa-przyciskow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-top: auto;
-  width: 100%;
 }
 
+/* Komunikaty i błędy */
 .komunikat {
   padding: 14px 16px;
   border-radius: 8px;
   background-color: #1d2127;
+  border: 1px solid #2d333b;
+}
+
+.komunikat.blad,
+.blad-walidacji {
+  color: #fca5a5;
 }
 
 .komunikat.blad {
-  border: 1px solid #ef4444;
-  color: #fca5a5;
+  border-color: #ef4444;
+}
+
+.blad-walidacji {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+}
+
+/* Tierlista (podstrona Obejrzane i Tierlista) */
+.tierlista-sekcja {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.wiersz-tieru {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  min-height: 110px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #2d333b;
+  background-color: #1d2127;
+}
+
+.etykieta-tieru {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.tier-S { background-color: #f87171; }
+.tier-A { background-color: #fb923c; }
+.tier-B { background-color: #facc15; }
+.tier-C { background-color: #4ade80; }
+.tier-D { background-color: #60a5fa; }
+
+.zawartosc-tieru {
+  padding: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.pusty-tier {
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.kafelek-tieru {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #252b34;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 8px 10px;
+  max-width: 100%;
+}
+
+.mini-plakat {
+  width: 42px;
+  height: 62px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.kafelek-tekst {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kafelek-tytul {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.kafelek-notatka {
+  font-size: 0.82rem;
+  color: #d1d5db;
+  margin: 0;
+}
+
+.kafelek-akcje {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.formularz-oceny {
+  background-color: #1d2127;
+  border: 1px solid #2d333b;
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+/* Responsywność na telefony */
+@media (max-width: 600px) {
+  .pasek-nawigacji {
+    padding: 12px 16px;
+  }
+
+  .wiersz-tieru {
+    grid-template-columns: 56px 1fr;
+  }
+
+  .etykieta-tieru {
+    font-size: 1.25rem;
+  }
 }
